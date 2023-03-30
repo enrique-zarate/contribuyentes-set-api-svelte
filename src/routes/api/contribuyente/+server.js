@@ -2,6 +2,8 @@
 import { json } from "@sveltejs/kit";
 // we're going to use Prisma to connect to our database and work with our data
 import { PrismaClient } from "@prisma/client";
+// we'll use the error from sveltekit
+import { error } from "@sveltejs/kit";
 
 // We'll create a new instance of the PrismaClient class
 const prisma = new PrismaClient();
@@ -13,19 +15,29 @@ export async function GET({ url }) {
   console.log("HOLA");
   console.log(url.searchParams);
   const ced = url.searchParams.get("cedula");
-  const dig = parseInt(url.searchParams.get("digito"));
   // parse digito_verif to an integer
-  console.log(ced, dig);
+  const dig = parseInt(url.searchParams.get("digito"));
 
-  // Using the AND operator, find the one Contribuyente object that matches the cedula and digito_verif
-  const contribuyente = await prisma.contribuyente.findUnique({
-    where: {
-      cedula_digito_verif: {
-        cedula: ced,
-        digito_verif: dig,
+  try {
+    // Using the AND operator, find the one Contribuyente object that matches the cedula and digito_verif
+    const contribuyente = await prisma.contribuyente.findUnique({
+      where: {
+        cedula_digito_verif: {
+          cedula: ced,
+          digito_verif: dig,
+        },
       },
-    },
-  });
-  // Then, we'll return the contribuyente as JSON
-  return json(contribuyente);
+    });
+    // If the Contribuyente object is found, return it as JSON
+    if (contribuyente) {
+      return json(contribuyente);
+    }
+    // If the Contribuyente object is not found, return a 404 error
+    else {
+      return json({ error: "Contribuyente no encontrado" });
+    }
+  } catch (e) {
+    console.log(e);
+    throw error(500, "Error al buscar contribuyente");
+  }
 }
