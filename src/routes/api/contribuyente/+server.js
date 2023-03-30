@@ -8,35 +8,24 @@ const prisma = new PrismaClient();
 // We'll import the Prisma model 'Contribuyente' so we can use it in our route
 // import Contribuyente from "$lib/models/Contribuyente";
 
-// First, we'll create a function that handles the GET request and returns  the Contribuyentes objects in the database by using the findMany() method and searching by 'cedula'
-// export async function GET() {
-//   const contribuyentes = await prisma.contribuyente.findMany({
-//     // filter by cedula equals 1000460 (just for testing)
-//     where: {
-//       cedula: {
-//         equals: "1000460",
-//       },
-//     },
-//   });
-//   // Then, we'll return the contribuyentes as JSON
-//   return json(contribuyentes);
-// }
-
-// Next, we'll create a function that returns a single Contribuyente object by using the findUnique() method and searching by 'cedula'
+// First, we'll create a function that returns a single Contribuyente object by using the findUnique() method and searching by 'cedula' and 'digito_verif'
 export async function GET({ url }) {
-  const ced = url.searchParams.get("cedu");
-  console.log(ced);
-  // console.log(url.searchParams.get("cedu"));
-  // console.log(params);
+  console.log("HOLA");
+  console.log(url.searchParams);
+  const ced = url.searchParams.get("cedula");
+  const dig = parseInt(url.searchParams.get("digito"));
+  // parse digito_verif to an integer
+  console.log(ced, dig);
 
-  // Find the one Contribuyente object that matches the cedula
-  const contribuyentes = await prisma.contribuyente.findUnique({
+  // Using the AND operator, find the one Contribuyente object that matches the cedula and digito_verif
+  const contribuyente = await prisma.contribuyente.findUnique({
     where: {
-      cedula: ced,
+      cedula_digito_verif: {
+        cedula: ced,
+        digito_verif: dig,
+      },
     },
   });
-  // Then, we'll return the contribuyentes as JSON
-  return json(contribuyentes);
+  // Then, we'll return the contribuyente as JSON
+  return json(contribuyente);
 }
-
-// test URL with para

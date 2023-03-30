@@ -5,7 +5,7 @@ import fs from "fs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const fileStream = fs.createReadStream("ruc0.txt");
+  const fileStream = fs.createReadStream("ruc1.txt");
 
   const rl = readline.createInterface({
     input: fileStream,

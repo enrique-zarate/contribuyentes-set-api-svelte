@@ -17,4 +17,6 @@ model Contribuyente {
   digito_verif Int
   rfc          String
   estado       String
+
+  @@unique([cedula, digito_verif], name: "cedula_digito_verif")
 }
