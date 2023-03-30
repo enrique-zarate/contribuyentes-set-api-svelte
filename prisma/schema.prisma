@@ -11,8 +11,9 @@ datasource db {
 }
 
 model Contribuyente {
-  id           Int     @id @default(autoincrement())
-  cedula       String  @unique
+  // make id with uuid
+  id           String   @id @default(uuid())
+  cedula       String   @unique
   nombre       String
   digito_verif Int
   rfc          String
